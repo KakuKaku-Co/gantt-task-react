@@ -266,6 +266,7 @@ const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'second
 
   tasks.forEach((task:any) => {
     const startDate = new Date(task.start);
+    startDate.setDate(startDate.getDate() + 1); // 1日後に設定
     const endDate = new Date(task.end);
 
     for (
@@ -332,7 +333,7 @@ const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining')
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
-          y={(tasks.length - 1) * rowHeight - (rowHeight / 2.5)}
+          y={(tasks.length - 1) * rowHeight - (rowHeight / 2)}
           fontSize={fontSize}
           fontFamily={fontFamily}
           fill="black"
@@ -345,7 +346,7 @@ const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining')
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
-          y={(tasks.length) * rowHeight - (rowHeight / 2.5)}
+          y={(tasks.length) * rowHeight - (rowHeight / 2)}
           fontSize={fontSize}
           fontFamily={fontFamily}
           fill="black"
