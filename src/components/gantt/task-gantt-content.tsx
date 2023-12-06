@@ -260,16 +260,12 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     }
   };
 
-  const newYValue = (tasks.length) * rowHeight - (rowHeight / 3);
-  const newYValue2row = (tasks.length - 1) * rowHeight - (rowHeight / 3);
-
-  // 日毎の集計を計算する関数
-  const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'seconds' | 'remaining' = 'seconds'): Map<string, number> => {
+// 日毎の集計を計算する関数
+const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'seconds' | 'remaining' = 'seconds'): Map<string, number> => {
   const totals = new Map<string, number>(dates.map((date:any) => [date.toISOString().split('T')[0], 0]));
 
   tasks.forEach((task:any) => {
     const startDate = new Date(task.start);
-    startDate.setDate(startDate.getDate() + 1); // 1日後に設定
     const endDate = new Date(task.end);
 
     for (
@@ -336,7 +332,7 @@ const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining')
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
-          y={newYValue}
+          y={(tasks.length - 1) * rowHeight - (rowHeight / 2.5)}
           fontSize={fontSize}
           fontFamily={fontFamily}
           fill="black"
@@ -349,7 +345,7 @@ const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining')
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
-          y={newYValue2row}
+          y={(tasks.length) * rowHeight - (rowHeight / 2.5)}
           fontSize={fontSize}
           fontFamily={fontFamily}
           fill="black"
