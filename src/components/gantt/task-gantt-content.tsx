@@ -60,8 +60,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   const [xStep, setXStep] = useState(0);
   const [initEventX1Delta, setInitEventX1Delta] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
-  const [yValue, setYValue] = useState(0);
-  const [yValue2row, setYValue2row] = useState(0);
 
   // create xStep
   useEffect(() => {
@@ -73,21 +71,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     const newXStep = (timeStep * columnWidth) / dateDelta;
     setXStep(newXStep);
   }, [columnWidth, dates, timeStep]);
-
-  useEffect(() => {
-    // 新しい y の値を計算
-    const newYValue = (tasks.length) * rowHeight - (rowHeight / 3);
-    const newYValue2row = (tasks.length - 1) * rowHeight - (rowHeight / 3);
-  
-    // 値が変わった場合のみ状態を更新
-    if (yValue !== newYValue) {
-      setYValue(newYValue);
-    }
-    if (yValue2row !== newYValue2row) {
-      setYValue2row(newYValue2row);
-    }
-  }, [tasks.length, rowHeight, yValue, yValue2row]);
-  
 
   useEffect(() => {
     const handleMouseMove = async (event: MouseEvent) => {
@@ -277,8 +260,11 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     }
   };
 
-// 日毎の集計を計算する関数
-const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'seconds' | 'remaining' = 'seconds'): Map<string, number> => {
+  const newYValue = (tasks.length) * rowHeight - (rowHeight / 3);
+  const newYValue2row = (tasks.length - 1) * rowHeight - (rowHeight / 3);
+
+  // 日毎の集計を計算する関数
+  const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'seconds' | 'remaining' = 'seconds'): Map<string, number> => {
   const totals = new Map<string, number>(dates.map((date:any) => [date.toISOString().split('T')[0], 0]));
 
   tasks.forEach((task:any) => {
@@ -350,7 +336,7 @@ const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining')
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
-          y={yValue}
+          y={newYValue}
           fontSize={fontSize}
           fontFamily={fontFamily}
           fill="black"
@@ -363,7 +349,7 @@ const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining')
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
-          y={yValue2row}
+          y={newYValue2row}
           fontSize={fontSize}
           fontFamily={fontFamily}
           fill="black"
