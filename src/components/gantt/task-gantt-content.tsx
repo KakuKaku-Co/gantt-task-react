@@ -260,6 +260,37 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     }
   };
 
+// 日毎の集計を計算する関数
+const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'seconds' | 'remaining' = 'seconds'): Map<string, number> => {
+  const totals = new Map<string, number>(dates.map((date:any) => [date.toISOString().split('T')[0], 0]));
+
+  tasks.forEach((task:any) => {
+    const startDate = new Date(task.start);
+    const endDate = new Date(task.end);
+
+    for (
+      let date = new Date(startDate);
+      date <= endDate;
+      date.setDate(date.getDate() + 1)
+    ) {
+      const dateKey = date.toISOString().split('T')[0];
+      if (totals.has(dateKey)) {
+        const currentTotal = totals.get(dateKey);
+        totals.set(dateKey, currentTotal + task[propName]);
+      }
+    }
+  });
+
+  return totals;
+};
+
+// 日毎の集計を計算（secondsを使用）
+const dailyTotalsWithSeconds = calculateDailyTotals(tasks, dates, 'seconds');
+
+// 日毎の集計を計算（remainingを使用）
+const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining');
+
+
   return (
     <g className="content">
       <g className="arrows" fill={arrowColor} stroke={arrowColor}>
@@ -297,6 +328,32 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
           );
         })}
       </g>
+      {Array.from(dailyTotalsWithSeconds).map(([dateKey, totalSeconds], index) => (
+        <text
+          key={dateKey}
+          x={index * columnWidth - (columnWidth / 2)}
+          y={(tasks.length - 1) * rowHeight - (rowHeight / 2.5)}
+          fontSize={fontSize}
+          fontFamily={fontFamily}
+          fill="black"
+          textAnchor="middle"
+        >
+          {totalSeconds}
+        </text>
+      ))}
+      {Array.from(dailyTotalsWithRemaining).map(([dateKey, totalSeconds], index) => (
+        <text
+          key={dateKey}
+          x={index * columnWidth - (columnWidth / 2)}
+          y={(tasks.length) * rowHeight - (rowHeight / 2.5)}
+          fontSize={fontSize}
+          fontFamily={fontFamily}
+          fill="black"
+          textAnchor="middle"
+        >
+          {totalSeconds}
+        </text>
+      ))}
     </g>
   );
 };

@@ -96,7 +96,12 @@ export const TaskListTableDefault: React.FC<{
                 maxWidth: rowWidth,
               }}
             >
-              &nbsp;{toLocaleDateString(t.start, dateTimeOptions)}
+              {
+                (t.name !== '放送時間' && t.name !== '残り時間') && 
+                <React.Fragment>{toLocaleDateString(t.start, dateTimeOptions)}</React.Fragment>
+              }
+                {/* &nbsp;{toLocaleDateString(t.start, dateTimeOptions)} */}
+
             </div>
             <div
               className={styles.taskListCell}
@@ -105,7 +110,11 @@ export const TaskListTableDefault: React.FC<{
                 maxWidth: rowWidth,
               }}
             >
-              &nbsp;{toLocaleDateString(t.end, dateTimeOptions)}
+              {
+                (t.name !== '放送時間' && t.name !== '残り時間') && 
+                <React.Fragment>{toLocaleDateString(t.end, dateTimeOptions)}</React.Fragment>
+              }
+                {/* &nbsp;{toLocaleDateString(t.end, dateTimeOptions)} */}
             </div>
           </div>
         );
