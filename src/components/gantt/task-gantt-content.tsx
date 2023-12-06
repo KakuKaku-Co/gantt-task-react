@@ -60,6 +60,8 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   const [xStep, setXStep] = useState(0);
   const [initEventX1Delta, setInitEventX1Delta] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
+  const [yValue, setYValue] = useState(0);
+  const [yValue2row, setYValue2row] = useState(0);
 
   // create xStep
   useEffect(() => {
@@ -71,6 +73,12 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     const newXStep = (timeStep * columnWidth) / dateDelta;
     setXStep(newXStep);
   }, [columnWidth, dates, timeStep]);
+
+  useEffect(() => {
+    // クライアントサイドで y の値を計算
+    setYValue((tasks.length) * rowHeight - (rowHeight / 2));
+    setYValue2row((tasks.length - 1) * rowHeight - (rowHeight / 2));
+  }, [tasks.length, rowHeight]); // 依存配列
 
   useEffect(() => {
     const handleMouseMove = async (event: MouseEvent) => {
@@ -261,35 +269,35 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   };
 
 // 日毎の集計を計算する関数
-// const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'seconds' | 'remaining' = 'seconds'): Map<string, number> => {
-//   const totals = new Map<string, number>(dates.map((date:any) => [date.toISOString().split('T')[0], 0]));
+const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'seconds' | 'remaining' = 'seconds'): Map<string, number> => {
+  const totals = new Map<string, number>(dates.map((date:any) => [date.toISOString().split('T')[0], 0]));
 
-//   tasks.forEach((task:any) => {
-//     const startDate = new Date(task.start);
-//     startDate.setDate(startDate.getDate() + 1); // 1日後に設定
-//     const endDate = new Date(task.end);
+  tasks.forEach((task:any) => {
+    const startDate = new Date(task.start);
+    startDate.setDate(startDate.getDate() + 1); // 1日後に設定
+    const endDate = new Date(task.end);
 
-//     for (
-//       let date = new Date(startDate);
-//       date <= endDate;
-//       date.setDate(date.getDate() + 1)
-//     ) {
-//       const dateKey = date.toISOString().split('T')[0];
-//       if (totals.has(dateKey)) {
-//         const currentTotal = totals.get(dateKey);
-//         totals.set(dateKey, currentTotal + task[propName]);
-//       }
-//     }
-//   });
+    for (
+      let date = new Date(startDate);
+      date <= endDate;
+      date.setDate(date.getDate() + 1)
+    ) {
+      const dateKey = date.toISOString().split('T')[0];
+      if (totals.has(dateKey)) {
+        const currentTotal = totals.get(dateKey);
+        totals.set(dateKey, currentTotal + task[propName]);
+      }
+    }
+  });
 
-//   return totals;
-// };
+  return totals;
+};
 
-// // 日毎の集計を計算（secondsを使用）
-// const dailyTotalsWithSeconds = calculateDailyTotals(tasks, dates, 'seconds');
+// 日毎の集計を計算（secondsを使用）
+const dailyTotalsWithSeconds = calculateDailyTotals(tasks, dates, 'seconds');
 
-// // 日毎の集計を計算（remainingを使用）
-// const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining');
+// 日毎の集計を計算（remainingを使用）
+const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining');
 
 
   return (
@@ -329,11 +337,11 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
           );
         })}
       </g>
-      {/* {Array.from(dailyTotalsWithSeconds).map(([dateKey, totalSeconds], index) => (
+      {Array.from(dailyTotalsWithSeconds).map(([dateKey, totalSeconds], index) => (
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
-          y={(tasks.length - 1) * rowHeight - (rowHeight / 2)}
+          y={yValue}
           fontSize={fontSize}
           fontFamily={fontFamily}
           fill="black"
@@ -346,7 +354,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
-          y={(tasks.length) * rowHeight - (rowHeight / 2)}
+          y={yValue2row}
           fontSize={fontSize}
           fontFamily={fontFamily}
           fill="black"
@@ -354,7 +362,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         >
           {totalSeconds}
         </text>
-      ))} */}
+      ))}
     </g>
   );
 };

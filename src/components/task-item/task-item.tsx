@@ -108,18 +108,21 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
       }}
     >
       {taskItem}
-      <text
-        x={getX()}
-        y={task.y + taskHeight * 0.5}
-        className={
-          isTextInside
-            ? style.barLabel
-            : style.barLabel && style.barLabelOutside
-        }
-        ref={textRef}
-      >
-        {task.name}
-      </text>
+      {(task.name !== '放送時間' && task.name !== '残り時間') &&
+      (     
+        <text
+          x={getX()}
+          y={task.y + taskHeight * 0.5}
+          className={
+            isTextInside
+              ? style.barLabel
+              : style.barLabel && style.barLabelOutside
+          }
+          ref={textRef}
+        >
+          {task.name}
+        </text>
+      )}
     </g>
   );
 };

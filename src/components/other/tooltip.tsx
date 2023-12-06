@@ -117,29 +117,33 @@ export const StandardTooltipContent: React.FC<{
   fontSize: string;
   fontFamily: string;
 }> = ({ task, fontSize, fontFamily }) => {
+  // スタイルオブジェクト
   const style = {
-    fontSize,
+    fontSize: `${fontSize}px`, // fontSize を正しく設定
     fontFamily,
   };
+
+  // task.name が '放送時間' または '残り時間' の場合は何も表示しない
+  if (task.name === '放送時間' || task.name === '残り時間') {
+    return null;
+  }
+
   return (
     <div className={styles.tooltipDefaultContainer} style={style}>
-      <b style={{ fontSize: fontSize + 6 }}>{`${
-        task.name
-      }: ${task.start.getDate()}-${
-        task.start.getMonth() + 1
-      }-${task.start.getFullYear()} - ${task.end.getDate()}-${
-        task.end.getMonth() + 1
-      }-${task.end.getFullYear()}`}</b>
+      <b style={{ fontSize: `${parseInt(fontSize) + 6}px` }}>
+        {`${task.name}: ${task.start.getDate()}-${task.start.getMonth() + 1}-${task.start.getFullYear()} - ${task.end.getDate()}-${task.end.getMonth() + 1}-${task.end.getFullYear()}`}
+      </b>
       {task.end.getTime() - task.start.getTime() !== 0 && (
-        <p className={styles.tooltipDefaultContainerParagraph}>{`Duration: ${~~(
-          (task.end.getTime() - task.start.getTime()) /
-          (1000 * 60 * 60 * 24)
-        )} day(s)`}</p>
+        <p className={styles.tooltipDefaultContainerParagraph}>
+          {`Duration: ${Math.floor((task.end.getTime() - task.start.getTime()) / (1000 * 60 * 60 * 24))} day(s)`}
+        </p>
       )}
-
-      <p className={styles.tooltipDefaultContainerParagraph}>
-        {!!task.progress && `Progress: ${task.progress} %`}
-      </p>
+      {!!task.progress && (
+        <p className={styles.tooltipDefaultContainerParagraph}>
+          {`Progress: ${task.progress} %`}
+        </p>
+      )}
     </div>
   );
 };
+
