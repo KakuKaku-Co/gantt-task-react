@@ -261,35 +261,35 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   };
 
 // 日毎の集計を計算する関数
-const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'seconds' | 'remaining' = 'seconds'): Map<string, number> => {
-  const totals = new Map<string, number>(dates.map((date:any) => [date.toISOString().split('T')[0], 0]));
+// const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'seconds' | 'remaining' = 'seconds'): Map<string, number> => {
+//   const totals = new Map<string, number>(dates.map((date:any) => [date.toISOString().split('T')[0], 0]));
 
-  tasks.forEach((task:any) => {
-    const startDate = new Date(task.start);
-    startDate.setDate(startDate.getDate() + 1); // 1日後に設定
-    const endDate = new Date(task.end);
+//   tasks.forEach((task:any) => {
+//     const startDate = new Date(task.start);
+//     startDate.setDate(startDate.getDate() + 1); // 1日後に設定
+//     const endDate = new Date(task.end);
 
-    for (
-      let date = new Date(startDate);
-      date <= endDate;
-      date.setDate(date.getDate() + 1)
-    ) {
-      const dateKey = date.toISOString().split('T')[0];
-      if (totals.has(dateKey)) {
-        const currentTotal = totals.get(dateKey);
-        totals.set(dateKey, currentTotal + task[propName]);
-      }
-    }
-  });
+//     for (
+//       let date = new Date(startDate);
+//       date <= endDate;
+//       date.setDate(date.getDate() + 1)
+//     ) {
+//       const dateKey = date.toISOString().split('T')[0];
+//       if (totals.has(dateKey)) {
+//         const currentTotal = totals.get(dateKey);
+//         totals.set(dateKey, currentTotal + task[propName]);
+//       }
+//     }
+//   });
 
-  return totals;
-};
+//   return totals;
+// };
 
-// 日毎の集計を計算（secondsを使用）
-const dailyTotalsWithSeconds = calculateDailyTotals(tasks, dates, 'seconds');
+// // 日毎の集計を計算（secondsを使用）
+// const dailyTotalsWithSeconds = calculateDailyTotals(tasks, dates, 'seconds');
 
-// 日毎の集計を計算（remainingを使用）
-const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining');
+// // 日毎の集計を計算（remainingを使用）
+// const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining');
 
 
   return (
@@ -329,7 +329,7 @@ const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining')
           );
         })}
       </g>
-      {Array.from(dailyTotalsWithSeconds).map(([dateKey, totalSeconds], index) => (
+      {/* {Array.from(dailyTotalsWithSeconds).map(([dateKey, totalSeconds], index) => (
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
@@ -354,7 +354,7 @@ const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining')
         >
           {totalSeconds}
         </text>
-      ))}
+      ))} */}
     </g>
   );
 };
