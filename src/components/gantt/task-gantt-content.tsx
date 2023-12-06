@@ -266,6 +266,7 @@ const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'second
 
   tasks.forEach((task:any) => {
     const startDate = new Date(task.start);
+    startDate.setDate(startDate.getDate() + 1);
     const endDate = new Date(task.end);
 
     for (
