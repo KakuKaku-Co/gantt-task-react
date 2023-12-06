@@ -75,10 +75,19 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   }, [columnWidth, dates, timeStep]);
 
   useEffect(() => {
-    // クライアントサイドで y の値を計算
-    setYValue((tasks.length) * rowHeight - (rowHeight / 2));
-    setYValue2row((tasks.length - 1) * rowHeight - (rowHeight / 2));
-  }, [tasks.length, rowHeight]); // 依存配列
+    // 新しい y の値を計算
+    const newYValue = (tasks.length) * rowHeight - (rowHeight / 3);
+    const newYValue2row = (tasks.length - 1) * rowHeight - (rowHeight / 3);
+  
+    // 値が変わった場合のみ状態を更新
+    if (yValue !== newYValue) {
+      setYValue(newYValue);
+    }
+    if (yValue2row !== newYValue2row) {
+      setYValue2row(newYValue2row);
+    }
+  }, [tasks.length, rowHeight, yValue, yValue2row]);
+  
 
   useEffect(() => {
     const handleMouseMove = async (event: MouseEvent) => {
