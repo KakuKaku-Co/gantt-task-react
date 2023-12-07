@@ -123,11 +123,6 @@ export const StandardTooltipContent: React.FC<{
     fontFamily,
   };
 
-  // task.name が '放送時間' または '残り時間' の場合は何も表示しない
-  if (task.name === '放送時間' || task.name === '残り時間') {
-    return null;
-  }
-
   return (
     <div className={styles.tooltipDefaultContainer} style={style}>
       <b style={{ fontSize: `${parseInt(fontSize) + 6}px` }}>
