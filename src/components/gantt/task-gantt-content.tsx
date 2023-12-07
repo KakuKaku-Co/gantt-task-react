@@ -289,7 +289,7 @@ const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'second
 const dailyTotalsWithSeconds = calculateDailyTotals(tasks, dates, 'seconds');
 
 // 日毎の集計を計算（remainingを使用）
-const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining');
+// const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining');
 
 
   return (
@@ -342,7 +342,7 @@ const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining')
           {totalSeconds}
         </text>
       ))}
-      {Array.from(dailyTotalsWithRemaining).map(([dateKey, totalSeconds], index) => (
+      {/* {Array.from(dailyTotalsWithRemaining).map(([dateKey, totalSeconds], index) => (
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
@@ -354,7 +354,7 @@ const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining')
         >
           {totalSeconds}
         </text>
-      ))}
+      ))} */}
     </g>
   );
 };
