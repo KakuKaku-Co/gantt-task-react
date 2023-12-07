@@ -119,25 +119,29 @@ export const StandardTooltipContent: React.FC<{
 }> = ({ task, fontSize, fontFamily }) => {
   // スタイルオブジェクト
   const style = {
-    fontSize: `${fontSize}px`, // fontSize を正しく設定
+    fontSize,
     fontFamily,
   };
 
   return (
     <div className={styles.tooltipDefaultContainer} style={style}>
-      <b style={{ fontSize: `${parseInt(fontSize) + 6}px` }}>
-        {`${task.name}: ${task.start.getDate()}-${task.start.getMonth() + 1}-${task.start.getFullYear()} - ${task.end.getDate()}-${task.end.getMonth() + 1}-${task.end.getFullYear()}`}
-      </b>
+      <b style={{ fontSize: fontSize + 6 }}>{`${
+        task.name
+      }: ${task.start.getDate()}-${
+        task.start.getMonth() + 1
+      }-${task.start.getFullYear()} - ${task.end.getDate()}-${
+        task.end.getMonth() + 1
+      }-${task.end.getFullYear()}`}</b>
       {task.end.getTime() - task.start.getTime() !== 0 && (
-        <p className={styles.tooltipDefaultContainerParagraph}>
-          {`Duration: ${Math.floor((task.end.getTime() - task.start.getTime()) / (1000 * 60 * 60 * 24))} day(s)`}
-        </p>
+        <p className={styles.tooltipDefaultContainerParagraph}>{`Duration: ${~~(
+          (task.end.getTime() - task.start.getTime()) /
+          (1000 * 60 * 60 * 24)
+        )} day(s)`}</p>
       )}
-      {!!task.progress && (
-        <p className={styles.tooltipDefaultContainerParagraph}>
-          {`Progress: ${task.progress} %`}
-        </p>
-      )}
+
+      <p className={styles.tooltipDefaultContainerParagraph}>
+        {!!task.progress && `Progress: ${task.progress} %`}
+      </p>
     </div>
   );
 };
