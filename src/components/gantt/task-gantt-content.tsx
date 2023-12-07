@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EventOption } from "../../types/public-types";
 import { BarTask } from "../../types/bar-task";
 import { Arrow } from "../other/arrow";
@@ -285,11 +285,15 @@ const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'second
   return totals;
 };
 
-// 日毎の集計を計算（secondsを使用）
-const dailyTotalsWithSeconds = useMemo(() => calculateDailyTotals(tasks, dates, 'seconds'), [tasks, dates]);
+// ステートとして日毎の集計を管理
+const [dailyTotalsWithSeconds, setDailyTotalsWithSeconds] = useState<Map<string, number>>(new Map());
+const [dailyTotalsWithRemaining, setDailyTotalsWithRemaining] = useState<Map<string, number>>(new Map());
 
-// 日毎の集計を計算（remainingを使用）
-const dailyTotalsWithRemaining = useMemo(() => calculateDailyTotals(tasks, dates, 'remaining'), [tasks, dates]);
+// 初回レンダリング時にのみ計算を実行
+useEffect(() => {
+  setDailyTotalsWithSeconds(calculateDailyTotals(tasks, dates, 'seconds'));
+  setDailyTotalsWithRemaining(calculateDailyTotals(tasks, dates, 'remaining'));
+}, [tasks, dates]); // 依存配列に tasks と dates を指定
 
 
   return (
