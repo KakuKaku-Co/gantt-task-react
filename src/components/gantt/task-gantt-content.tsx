@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { EventOption } from "../../types/public-types";
 import { BarTask } from "../../types/bar-task";
 import { Arrow } from "../other/arrow";
@@ -286,10 +286,10 @@ const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'second
 };
 
 // 日毎の集計を計算（secondsを使用）
-const dailyTotalsWithSeconds = calculateDailyTotals(tasks, dates, 'seconds');
+const dailyTotalsWithSeconds = useMemo(() => calculateDailyTotals(tasks, dates, 'seconds'), [tasks, dates]);
 
 // 日毎の集計を計算（remainingを使用）
-// const dailyTotalsWithRemaining = calculateDailyTotals(tasks, dates, 'remaining');
+const dailyTotalsWithRemaining = useMemo(() => calculateDailyTotals(tasks, dates, 'remaining'), [tasks, dates]);
 
 
   return (
@@ -342,7 +342,7 @@ const dailyTotalsWithSeconds = calculateDailyTotals(tasks, dates, 'seconds');
           {totalSeconds}
         </text>
       ))}
-      {/* {Array.from(dailyTotalsWithRemaining).map(([dateKey, totalSeconds], index) => (
+      {Array.from(dailyTotalsWithRemaining).map(([dateKey, totalSeconds], index) => (
         <text
           key={dateKey}
           x={index * columnWidth - (columnWidth / 2)}
@@ -354,7 +354,7 @@ const dailyTotalsWithSeconds = calculateDailyTotals(tasks, dates, 'seconds');
         >
           {totalSeconds}
         </text>
-      ))} */}
+      ))}
     </g>
   );
 };
