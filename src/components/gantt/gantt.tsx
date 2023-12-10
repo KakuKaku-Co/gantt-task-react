@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { ViewMode, GanttProps, Task } from "../../types/public-types";
 import { GridProps } from "../grid/grid";
-import { ganttDateRange, seedDates } from "../../helpers/date-helper";
+import { /* ganttDateRange, */ seedDates } from "../../helpers/date-helper";
 import { CalendarProps } from "../calendar/calendar";
 import { TaskGanttContentProps } from "./task-gantt-content";
 import { TaskListHeaderDefault } from "../task-list/task-list-header";
@@ -54,7 +54,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   fontSize = "14px",
   arrowIndent = 20,
   todayColor = "rgba(252, 248, 227, 0.5)",
-  viewDate,
+  viewDate = new Date(2023, 10, 1),
   TooltipContent = StandardTooltipContent,
   TaskListHeader = TaskListHeaderDefault,
   TaskListTable = TaskListTableDefault,
@@ -69,7 +69,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
   const [dateSetup, setDateSetup] = useState<DateSetup>(() => {
-    const [startDate, endDate] = ganttDateRange(tasks, viewMode, preStepsCount);
+    const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+    const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
     return { viewMode, dates: seedDates(startDate, endDate, viewMode) };
   });
   const [currentViewDate, setCurrentViewDate] = useState<Date | undefined>(
@@ -98,8 +99,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const [scrollX, setScrollX] = useState(-1);
   const [ignoreScrollEvent, setIgnoreScrollEvent] = useState(false);
 
-  // task change events
-  useEffect(() => {
+   // task change events
+   useEffect(() => {
     let filteredTasks: Task[];
     if (onExpanderClick) {
       filteredTasks = removeHiddenTasks(tasks);
@@ -107,11 +108,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
       filteredTasks = tasks;
     }
     filteredTasks = filteredTasks.sort(sortTasks);
-    const [startDate, endDate] = ganttDateRange(
-      filteredTasks,
-      viewMode,
-      preStepsCount
-    );
+    const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+    const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
     let newDates = seedDates(startDate, endDate, viewMode);
     if (rtl) {
       newDates = newDates.reverse();
@@ -144,6 +142,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     );
   }, [
     tasks,
+    viewDate,
     viewMode,
     preStepsCount,
     rowHeight,
@@ -165,35 +164,35 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     scrollX,
     onExpanderClick,
   ]);
+  
+  
 
   useEffect(() => {
-    if (
-      viewMode === dateSetup.viewMode &&
-      ((viewDate && !currentViewDate) ||
-        (viewDate && currentViewDate?.valueOf() !== viewDate.valueOf()))
-    ) {
-      const dates = dateSetup.dates;
-      const index = dates.findIndex(
-        (d, i) =>
-          viewDate.valueOf() >= d.valueOf() &&
-          i + 1 !== dates.length &&
-          viewDate.valueOf() < dates[i + 1].valueOf()
+    if (viewMode === dateSetup.viewMode) {
+      const newIndex = dateSetup.dates.findIndex(
+        (d, i) => viewDate.valueOf() >= d.valueOf() &&
+                  i + 1 !== dateSetup.dates.length &&
+                  viewDate.valueOf() < dateSetup.dates[i + 1].valueOf()
       );
-      if (index === -1) {
-        return;
+  
+      if (newIndex !== -1 && columnWidth * newIndex !== scrollX) {
+        setScrollX(columnWidth * newIndex);
       }
-      setCurrentViewDate(viewDate);
-      setScrollX(columnWidth * index);
+  
+      if ((!currentViewDate) || (viewDate && currentViewDate?.valueOf() !== viewDate.valueOf())) {
+        setCurrentViewDate(viewDate);
+      }
     }
   }, [
     viewDate,
+    viewMode,
     columnWidth,
     dateSetup.dates,
     dateSetup.viewMode,
-    viewMode,
     currentViewDate,
-    setCurrentViewDate,
+    scrollX
   ]);
+  
 
   useEffect(() => {
     const { changedTask, action } = ganttEvent;
@@ -255,50 +254,50 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   }, [ganttHeight, tasks, headerHeight, rowHeight]);
 
   // scroll events
-  // useEffect(() => {
-  //   const handleWheel = (event: WheelEvent) => {
-  //     if (event.shiftKey || event.deltaX) {
-  //       const scrollMove = event.deltaX ? event.deltaX : event.deltaY;
-  //       let newScrollX = scrollX + scrollMove;
-  //       if (newScrollX < 0) {
-  //         newScrollX = 0;
-  //       } else if (newScrollX > svgWidth) {
-  //         newScrollX = svgWidth;
-  //       }
-  //       setScrollX(newScrollX);
-  //       event.preventDefault();
-  //     } else if (ganttHeight) {
-  //       let newScrollY = scrollY + event.deltaY;
-  //       if (newScrollY < 0) {
-  //         newScrollY = 0;
-  //       } else if (newScrollY > ganttFullHeight - ganttHeight) {
-  //         newScrollY = ganttFullHeight - ganttHeight;
-  //       }
-  //       if (newScrollY !== scrollY) {
-  //         setScrollY(newScrollY);
-  //         event.preventDefault();
-  //       }
-  //     }
+  useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      if (event.shiftKey || event.deltaX) {
+        const scrollMove = event.deltaX ? event.deltaX : event.deltaY;
+        let newScrollX = scrollX + scrollMove;
+        if (newScrollX < 0) {
+          newScrollX = 0;
+        } else if (newScrollX > svgWidth) {
+          newScrollX = svgWidth;
+        }
+        setScrollX(newScrollX);
+        event.preventDefault();
+      } else if (ganttHeight) {
+        let newScrollY = scrollY + event.deltaY;
+        if (newScrollY < 0) {
+          newScrollY = 0;
+        } else if (newScrollY > ganttFullHeight - ganttHeight) {
+          newScrollY = ganttFullHeight - ganttHeight;
+        }
+        if (newScrollY !== scrollY) {
+          setScrollY(newScrollY);
+          event.preventDefault();
+        }
+      }
 
-  //     setIgnoreScrollEvent(true);
-  //   };
+      setIgnoreScrollEvent(true);
+    };
 
-  //   // subscribe if scroll is necessary
-  //   wrapperRef.current?.addEventListener("wheel", handleWheel, {
-  //     passive: false,
-  //   });
-  //   return () => {
-  //     wrapperRef.current?.removeEventListener("wheel", handleWheel);
-  //   };
-  // }, [
-  //   wrapperRef,
-  //   scrollY,
-  //   scrollX,
-  //   ganttHeight,
-  //   svgWidth,
-  //   rtl,
-  //   ganttFullHeight,
-  // ]);
+    // subscribe if scroll is necessary
+    wrapperRef.current?.addEventListener("wheel", handleWheel, {
+      passive: false,
+    });
+    return () => {
+      wrapperRef.current?.removeEventListener("wheel", handleWheel);
+    };
+  }, [
+    wrapperRef,
+    scrollY,
+    scrollX,
+    ganttHeight,
+    svgWidth,
+    rtl,
+    ganttFullHeight,
+  ]);
 
   const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
     if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {

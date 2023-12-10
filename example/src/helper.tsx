@@ -100,7 +100,7 @@ export function initTasks() {
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 18),
-      end: new Date(currentDate.getFullYear(), currentDate.getMonth()+3, 31),
+      end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 31),
       name: "Party Time",
       id: "Task 9",
       progress: 0,
