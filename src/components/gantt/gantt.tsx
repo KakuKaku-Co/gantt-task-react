@@ -142,7 +142,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     );
   }, [
     tasks,
-    viewDate,
+    // viewDate,
     viewMode,
     preStepsCount,
     rowHeight,
