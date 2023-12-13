@@ -186,29 +186,32 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   
 
   useEffect(() => {
-    if (viewMode === dateSetup.viewMode) {
-      const newIndex = dateSetup.dates.findIndex(
-        (d, i) => viewDate.valueOf() >= d.valueOf() &&
-                  i + 1 !== dateSetup.dates.length &&
-                  viewDate.valueOf() < dateSetup.dates[i + 1].valueOf()
+    if (
+      viewMode === dateSetup.viewMode &&
+      ((viewDate && !currentViewDate) ||
+        (viewDate && currentViewDate?.valueOf() !== viewDate.valueOf()))
+    ) {
+      const dates = dateSetup.dates;
+      const index = dates.findIndex(
+        (d, i) =>
+          viewDate.valueOf() >= d.valueOf() &&
+          i + 1 !== dates.length &&
+          viewDate.valueOf() < dates[i + 1].valueOf()
       );
-  
-      if (newIndex !== -1 && columnWidth * newIndex !== scrollX) {
-        setScrollX(columnWidth * newIndex);
+      if (index === -1) {
+        return;
       }
-  
-      if ((!currentViewDate) || (viewDate && currentViewDate?.valueOf() !== viewDate.valueOf())) {
-        setCurrentViewDate(viewDate);
-      }
+      setCurrentViewDate(viewDate);
+      setScrollX(columnWidth * index);
     }
   }, [
     viewDate,
-    viewMode,
     columnWidth,
     dateSetup.dates,
     dateSetup.viewMode,
+    viewMode,
     currentViewDate,
-    scrollX
+    setCurrentViewDate,
   ]);
   
 
