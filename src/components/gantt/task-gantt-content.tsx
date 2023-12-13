@@ -262,7 +262,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
 
 // 日毎の集計を計算する関数
 const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'seconds' | 'remaining' = 'seconds'): Map<string, number> => {
-  console.log({dates})
   const totals = new Map<string, number>(dates.map((date:any) => [date.toLocaleDateString('ja-JP'), 0]));
 
   tasks.forEach((task:any) => {
@@ -281,7 +280,6 @@ const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'second
       }
     }
   });
-  console.log({totals})
   return totals;
 };
 

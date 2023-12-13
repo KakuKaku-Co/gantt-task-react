@@ -24,6 +24,8 @@ import { HorizontalScroll } from "../other/horizontal-scroll";
 import { removeHiddenTasks, sortTasks } from "../../helpers/other-helper";
 import styles from "./gantt.module.css";
 
+const defaultViewDate = new Date(2023, 0, 1);
+
 export const Gantt: React.FunctionComponent<GanttProps> = ({
   tasks,
   headerHeight = 50,
@@ -54,7 +56,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   fontSize = "14px",
   arrowIndent = 20,
   todayColor = "rgba(252, 248, 227, 0.5)",
-  viewDate = new Date(2023, 0, 1),
+  viewDate = defaultViewDate,
   TooltipContent = StandardTooltipContent,
   TaskListHeader = TaskListHeaderDefault,
   TaskListTable = TaskListTableDefault,
@@ -99,59 +101,61 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const [scrollX, setScrollX] = useState(-1);
   const [ignoreScrollEvent, setIgnoreScrollEvent] = useState(false);
 
-   // task change events
+  const prevViewDateRef = useRef<Date | null>(null);
+  // task change events
    useEffect(() => {
-    let filteredTasks: Task[];
-    if (onExpanderClick) {
-      filteredTasks = removeHiddenTasks(tasks);
-    } else {
-      filteredTasks = tasks;
-    }
-    filteredTasks = filteredTasks.sort(sortTasks);
-    const [taskStartDate, taskEndDate] = ganttDateRange(
-      filteredTasks,
-      viewMode,
-      preStepsCount
-    );
-    let taskNewDates = seedDates(taskStartDate, taskEndDate, viewMode);
-    console.log({taskNewDates})
-
-    const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
-    const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
-    let newDates = seedDates(startDate, endDate, viewMode);
-    console.log({newDates})
-    if (rtl) {
-      newDates = newDates.reverse();
-      if (scrollX === -1) {
-        setScrollX(newDates.length * columnWidth);
+    if (!prevViewDateRef.current || prevViewDateRef.current.getTime() !== viewDate.getTime()) {
+      let filteredTasks: Task[];
+      if (onExpanderClick) {
+        filteredTasks = removeHiddenTasks(tasks);
+      } else {
+        filteredTasks = tasks;
       }
-    }
-    setDateSetup({ dates: newDates, viewMode });
-    setBarTasks(
-      convertToBarTasks(
+      filteredTasks = filteredTasks.sort(sortTasks);
+      const [taskStartDate, taskEndDate] = ganttDateRange(
         filteredTasks,
-        taskNewDates,
-        columnWidth,
-        rowHeight,
-        taskHeight,
-        barCornerRadius,
-        handleWidth,
-        rtl,
-        barProgressColor,
-        barProgressSelectedColor,
-        barBackgroundColor,
-        barBackgroundSelectedColor,
-        projectProgressColor,
-        projectProgressSelectedColor,
-        projectBackgroundColor,
-        projectBackgroundSelectedColor,
-        milestoneBackgroundColor,
-        milestoneBackgroundSelectedColor
-      )
-    );
+        viewMode,
+        preStepsCount
+      );
+      let taskNewDates = seedDates(taskStartDate, taskEndDate, viewMode);
+
+      const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+      const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
+      let newDates = seedDates(startDate, endDate, viewMode);
+      if (rtl) {
+        newDates = newDates.reverse();
+        if (scrollX === -1) {
+          setScrollX(newDates.length * columnWidth);
+        }
+      }
+      setDateSetup({ dates: newDates, viewMode });
+      setBarTasks(
+        convertToBarTasks(
+          filteredTasks,
+          taskNewDates,
+          columnWidth,
+          rowHeight,
+          taskHeight,
+          barCornerRadius,
+          handleWidth,
+          rtl,
+          barProgressColor,
+          barProgressSelectedColor,
+          barBackgroundColor,
+          barBackgroundSelectedColor,
+          projectProgressColor,
+          projectProgressSelectedColor,
+          projectBackgroundColor,
+          projectBackgroundSelectedColor,
+          milestoneBackgroundColor,
+          milestoneBackgroundSelectedColor
+        )
+      );
+      prevViewDateRef.current = viewDate;
+    }
   }, [
     tasks,
-    // viewDate,
+    viewDate,
     viewMode,
     preStepsCount,
     rowHeight,
