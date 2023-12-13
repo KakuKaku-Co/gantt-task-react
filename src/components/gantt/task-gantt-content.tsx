@@ -286,8 +286,6 @@ const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'second
 // ステートとして日毎の集計を管理
 const [dailyTotalsWithSeconds, setDailyTotalsWithSeconds] = useState<Map<string, number>>(new Map());
 const [dailyTotalsWithRemaining, setDailyTotalsWithRemaining] = useState<Map<string, number>>(new Map());
-console.log({dailyTotalsWithSeconds})
-console.log({dailyTotalsWithRemaining})
 // 初回レンダリング時にのみ計算を実行
 useEffect(() => {
   setDailyTotalsWithSeconds(calculateDailyTotals(tasks, dates, 'seconds'));

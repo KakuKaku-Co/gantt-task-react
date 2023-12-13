@@ -122,7 +122,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     taskNewDates = taskNewDates.filter(date => 
       date.getFullYear() === viewDate.getFullYear() && date.getMonth() === viewDate.getMonth()
     );
-    console.log({taskNewDates})
       
     const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
     const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
