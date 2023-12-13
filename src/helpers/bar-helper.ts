@@ -158,12 +158,14 @@ const convertToBar = (
     x1 = taskXCoordinateRTL(task.end, dates, columnWidth);
   } else {
     x1 = taskXCoordinate(task.start, dates, columnWidth);
+    console.log({x1})
     x2 = taskXCoordinate(task.end, dates, columnWidth);
+    console.log({x2})
   }
   let typeInternal: TaskTypeInternal = task.type;
   if (typeInternal === "task" && x2 - x1 < handleWidth * 2) {
     typeInternal = "smalltask";
-    x2 = x1 + handleWidth * 2;
+    x2 = x1 /* + handleWidth * 2 */;
   }
 
   const [progressWidth, progressX] = progressWithByParams(
@@ -257,8 +259,8 @@ const taskXCoordinate = (xDate: Date, dates: Date[], columnWidth: number) => {
 
   const remainderMillis = xDate.getTime() - dates[index].getTime();
   const percentOfInterval =
-    remainderMillis / (dates[index + 1].getTime() - dates[index].getTime());
-  const x = index * columnWidth + percentOfInterval * columnWidth;
+    remainderMillis / (dates[index + 1].getTime() - dates[index].getTime()) +1;
+  const x = index * columnWidth  + percentOfInterval * columnWidth ;
   return x;
 };
 const taskXCoordinateRTL = (

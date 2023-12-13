@@ -286,7 +286,8 @@ const calculateDailyTotals = (tasks: BarTask[], dates: Date[], propName: 'second
 // ステートとして日毎の集計を管理
 const [dailyTotalsWithSeconds, setDailyTotalsWithSeconds] = useState<Map<string, number>>(new Map());
 const [dailyTotalsWithRemaining, setDailyTotalsWithRemaining] = useState<Map<string, number>>(new Map());
-
+console.log({dailyTotalsWithSeconds})
+console.log({dailyTotalsWithRemaining})
 // 初回レンダリング時にのみ計算を実行
 useEffect(() => {
   setDailyTotalsWithSeconds(calculateDailyTotals(tasks, dates, 'seconds'));
@@ -334,7 +335,7 @@ useEffect(() => {
       {Array.from(dailyTotalsWithSeconds).map(([dateKey, totalSeconds], index) => (
         <text
           key={dateKey}
-          x={index * columnWidth - (columnWidth / 2)}
+          x={(index+1) * columnWidth - (columnWidth / 2)}
           y={(tasks.length - 1) * rowHeight - (rowHeight / 2.5)}
           fontSize={fontSize}
           fontFamily={fontFamily}
@@ -347,7 +348,7 @@ useEffect(() => {
       {Array.from(dailyTotalsWithRemaining).map(([dateKey, totalSeconds], index) => (
         <text
           key={dateKey}
-          x={index * columnWidth - (columnWidth / 2)}
+          x={(index+1) * columnWidth - (columnWidth / 2)}
           y={(tasks.length) * rowHeight - (rowHeight / 2.5)}
           fontSize={fontSize}
           fontFamily={fontFamily}

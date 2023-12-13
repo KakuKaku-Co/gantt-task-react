@@ -24,6 +24,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
   const verticalGanttContainerRef = useRef<HTMLDivElement>(null);
   const newBarProps = { ...barProps, svg: ganttSVGRef };
+  console.log({newBarProps});
 
   useEffect(() => {
     if (horizontalContainerRef.current) {

@@ -9,6 +9,7 @@ const App = () => {
   const [view, setView] = React.useState<ViewMode>(ViewMode.Day);
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
   const [isChecked, setIsChecked] = React.useState(true);
+  const [date, setDate] = React.useState(new Date(2023, 0, 1)); // 2023年1月
   let columnWidth = 65;
   if (view === ViewMode.Year) {
     columnWidth = 350;
@@ -67,6 +68,14 @@ const App = () => {
     console.log("On expander click Id:" + task.id);
   };
 
+  const handlePrevMonth = () => {
+    setDate(new Date(date.getFullYear(), date.getMonth() - 1));
+  };
+
+  const handleNextMonth = () => {
+    setDate(new Date(date.getFullYear(), date.getMonth() + 1));
+  };
+
   return (
     <div className="Wrapper">
       <ViewSwitcher
@@ -75,6 +84,12 @@ const App = () => {
         isChecked={isChecked}
       />
       <h3>Gantt With Unlimited Height</h3>
+      
+          <h1>{date.getFullYear()}/{date.getMonth() + 1}</h1>
+
+          <button onClick={handlePrevMonth}>前月</button>
+
+          <button onClick={handleNextMonth}>次月</button>
       <Gantt
         tasks={tasks}
         viewMode={view}
@@ -87,6 +102,7 @@ const App = () => {
         onExpanderClick={handleExpanderClick}
         listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}
+        viewDate={date}
       />
       <h3>Gantt With Limited Height</h3>
       <Gantt

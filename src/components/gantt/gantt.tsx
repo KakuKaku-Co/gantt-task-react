@@ -101,58 +101,63 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const [scrollX, setScrollX] = useState(-1);
   const [ignoreScrollEvent, setIgnoreScrollEvent] = useState(false);
 
-  const prevViewDateRef = useRef<Date | null>(null);
-  // task change events
+  const prevViewDateRef = useRef(new Date());
+   // task change events
    useEffect(() => {
-    if (!prevViewDateRef.current || prevViewDateRef.current.getTime() !== viewDate.getTime()) {
-      let filteredTasks: Task[];
-      if (onExpanderClick) {
-        filteredTasks = removeHiddenTasks(tasks);
-      } else {
-        filteredTasks = tasks;
-      }
-      filteredTasks = filteredTasks.sort(sortTasks);
-      const [taskStartDate, taskEndDate] = ganttDateRange(
-        filteredTasks,
-        viewMode,
-        preStepsCount
-      );
-      let taskNewDates = seedDates(taskStartDate, taskEndDate, viewMode);
-
-      const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
-      const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
-      let newDates = seedDates(startDate, endDate, viewMode);
-      if (rtl) {
-        newDates = newDates.reverse();
-        if (scrollX === -1) {
-          setScrollX(newDates.length * columnWidth);
-        }
-      }
-      setDateSetup({ dates: newDates, viewMode });
-      setBarTasks(
-        convertToBarTasks(
-          filteredTasks,
-          taskNewDates,
-          columnWidth,
-          rowHeight,
-          taskHeight,
-          barCornerRadius,
-          handleWidth,
-          rtl,
-          barProgressColor,
-          barProgressSelectedColor,
-          barBackgroundColor,
-          barBackgroundSelectedColor,
-          projectProgressColor,
-          projectProgressSelectedColor,
-          projectBackgroundColor,
-          projectBackgroundSelectedColor,
-          milestoneBackgroundColor,
-          milestoneBackgroundSelectedColor
-        )
-      );
-      prevViewDateRef.current = viewDate;
+    if (prevViewDateRef.current.getTime() !== viewDate.getTime()) {
+    let filteredTasks: Task[];
+    if (onExpanderClick) {
+      filteredTasks = removeHiddenTasks(tasks);
+    } else {
+      filteredTasks = tasks;
     }
+    filteredTasks = filteredTasks.sort(sortTasks);
+    const [taskStartDate, taskEndDate] = ganttDateRange(
+      filteredTasks,
+      viewMode,
+      preStepsCount
+    );
+    let taskNewDates = seedDates(taskStartDate, taskEndDate, viewMode);
+    // viewDateと同じ月の日付だけを取得
+    taskNewDates = taskNewDates.filter(date => 
+      date.getFullYear() === viewDate.getFullYear() && date.getMonth() === viewDate.getMonth()
+    );
+    console.log({taskNewDates})
+      
+    const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+    const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
+    let newDates = seedDates(startDate, endDate, viewMode);
+    if (rtl) {
+      newDates = newDates.reverse();
+      if (scrollX === -1) {
+        setScrollX(taskNewDates.length * columnWidth);
+      }
+    }
+    setDateSetup({ dates: newDates, viewMode });
+    setBarTasks(
+      convertToBarTasks(
+        filteredTasks,
+        taskNewDates,
+        columnWidth,
+        rowHeight,
+        taskHeight,
+        barCornerRadius,
+        handleWidth,
+        rtl,
+        barProgressColor,
+        barProgressSelectedColor,
+        barBackgroundColor,
+        barBackgroundSelectedColor,
+        projectProgressColor,
+        projectProgressSelectedColor,
+        projectBackgroundColor,
+        projectBackgroundSelectedColor,
+        milestoneBackgroundColor,
+        milestoneBackgroundSelectedColor
+      )
+    );
+    prevViewDateRef.current = viewDate;
+  }
   }, [
     tasks,
     viewDate,
