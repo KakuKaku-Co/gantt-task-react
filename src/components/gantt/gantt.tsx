@@ -33,7 +33,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   ganttHeight = 0,
   viewMode = ViewMode.Day,
   preStepsCount = 1,
-  locale = "en-GB",
+  locale = "ja-JP",
   barFill = 60,
   barCornerRadius = 3,
   barProgressColor = "#a3a3ff",
@@ -54,7 +54,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   fontSize = "14px",
   arrowIndent = 20,
   todayColor = "rgba(252, 248, 227, 0.5)",
-  viewDate = new Date(2023, 10, 1),
+  viewDate = new Date(2023, 0, 1),
   TooltipContent = StandardTooltipContent,
   TaskListHeader = TaskListHeaderDefault,
   TaskListTable = TaskListTableDefault,
@@ -113,11 +113,13 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
       viewMode,
       preStepsCount
     );
-    const taskNewDates = seedDates(taskStartDate, taskEndDate, viewMode);
+    let taskNewDates = seedDates(taskStartDate, taskEndDate, viewMode);
+    console.log({taskNewDates})
 
     const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
     const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
     let newDates = seedDates(startDate, endDate, viewMode);
+    console.log({newDates})
     if (rtl) {
       newDates = newDates.reverse();
       if (scrollX === -1) {
