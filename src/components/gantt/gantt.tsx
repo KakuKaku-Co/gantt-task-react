@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { ViewMode, GanttProps, Task } from "../../types/public-types";
 import { GridProps } from "../grid/grid";
-import { /* ganttDateRange, */ seedDates } from "../../helpers/date-helper";
+import { ganttDateRange, seedDates } from "../../helpers/date-helper";
 import { CalendarProps } from "../calendar/calendar";
 import { TaskGanttContentProps } from "./task-gantt-content";
 import { TaskListHeaderDefault } from "../task-list/task-list-header";
@@ -108,6 +108,13 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
       filteredTasks = tasks;
     }
     filteredTasks = filteredTasks.sort(sortTasks);
+    const [taskStartDate, taskEndDate] = ganttDateRange(
+      filteredTasks,
+      viewMode,
+      preStepsCount
+    );
+    const taskNewDates = seedDates(taskStartDate, taskEndDate, viewMode);
+
     const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
     const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
     let newDates = seedDates(startDate, endDate, viewMode);
@@ -121,7 +128,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     setBarTasks(
       convertToBarTasks(
         filteredTasks,
-        newDates,
+        taskNewDates,
         columnWidth,
         rowHeight,
         taskHeight,
