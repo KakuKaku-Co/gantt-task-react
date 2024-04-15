@@ -157,8 +157,8 @@ const convertToBar = (
     x2 = taskXCoordinateRTL(task.start, dates, columnWidth);
     x1 = taskXCoordinateRTL(task.end, dates, columnWidth);
   } else {
-    x1 = taskXCoordinate(task.start, dates, columnWidth);
-    x2 = taskXCoordinate(task.end, dates, columnWidth);
+    x1 = taskXCoordinate(task.start, dates, columnWidth, 'start');
+    x2 = taskXCoordinate(task.end, dates, columnWidth, 'end');
   }
   let typeInternal: TaskTypeInternal = task.type;
   if (typeInternal === "task" && x2 - x1 < handleWidth * 2) {
@@ -212,7 +212,7 @@ const convertToMilestone = (
   milestoneBackgroundColor: string,
   milestoneBackgroundSelectedColor: string
 ): BarTask => {
-  const x = taskXCoordinate(task.start, dates, columnWidth);
+  const x = taskXCoordinate(task.start, dates, columnWidth, 'start');
   const y = taskYCoordinate(index, rowHeight, taskHeight);
 
   const x1 = x - taskHeight * 0.5;
@@ -246,7 +246,7 @@ const convertToMilestone = (
   };
 };
 
-const taskXCoordinate = (xDate: Date, dates: Date[], columnWidth: number) => {
+const taskXCoordinate = (xDate: Date, dates: Date[], columnWidth: number, startOrEnd: string) => {
   const index = dates.findIndex(d => d.getTime() >= xDate.getTime()) - 1;
 
   // index が -1 の場合の処理を追加
@@ -256,8 +256,14 @@ const taskXCoordinate = (xDate: Date, dates: Date[], columnWidth: number) => {
   }
 
   const remainderMillis = xDate.getTime() - dates[index].getTime();
-  const percentOfInterval =
-    remainderMillis / (dates[index + 1].getTime() - dates[index].getTime()) +1;
+  let percentOfInterval = 0;
+  if(startOrEnd === 'end') {
+    percentOfInterval =
+    remainderMillis / (dates[index + 1].getTime() - dates[index].getTime()) + 1;
+  }else{
+    percentOfInterval =
+    remainderMillis / (dates[index + 1].getTime() - dates[index].getTime());
+  }
   const x = index * columnWidth  + percentOfInterval * columnWidth ;
   return x;
 };
@@ -266,7 +272,7 @@ const taskXCoordinateRTL = (
   dates: Date[],
   columnWidth: number
 ) => {
-  let x = taskXCoordinate(xDate, dates, columnWidth);
+  let x = taskXCoordinate(xDate, dates, columnWidth, 'start');
   x += columnWidth;
   return x;
 };
