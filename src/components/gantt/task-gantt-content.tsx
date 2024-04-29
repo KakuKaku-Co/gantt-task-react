@@ -353,7 +353,7 @@ useEffect(() => {
           fill="black"
           textAnchor="middle"
         >
-          {totalSeconds}
+          {1200 - totalSeconds}
         </text>
       ))}
     </g>

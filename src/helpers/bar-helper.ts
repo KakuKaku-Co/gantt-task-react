@@ -157,8 +157,11 @@ const convertToBar = (
     x2 = taskXCoordinateRTL(task.start, dates, columnWidth);
     x1 = taskXCoordinateRTL(task.end, dates, columnWidth);
   } else {
-    x1 = taskXCoordinate(task.start, dates, columnWidth, 'start');
-    x2 = taskXCoordinate(task.end, dates, columnWidth, 'end');
+    x1 = taskXCoordinateBar(task.start, dates, columnWidth, 'start', task);
+    x2 = taskXCoordinateBar(task.end, dates, columnWidth, 'end', task);
+
+    // x1 = 0 // 1日のライン
+    // x2 = 1950 // 30日のライン
   }
   let typeInternal: TaskTypeInternal = task.type;
   if (typeInternal === "task" && x2 - x1 < handleWidth * 2) {
@@ -212,7 +215,7 @@ const convertToMilestone = (
   milestoneBackgroundColor: string,
   milestoneBackgroundSelectedColor: string
 ): BarTask => {
-  const x = taskXCoordinate(task.start, dates, columnWidth, 'start');
+  const x = taskXCoordinate(task.start, dates, columnWidth);
   const y = taskYCoordinate(index, rowHeight, taskHeight);
 
   const x1 = x - taskHeight * 0.5;
@@ -246,25 +249,69 @@ const convertToMilestone = (
   };
 };
 
-const taskXCoordinate = (xDate: Date, dates: Date[], columnWidth: number, startOrEnd: string) => {
+const taskXCoordinate = (
+  xDate: Date,
+  dates: Date[],
+  columnWidth: number
+) => {
   const index = dates.findIndex(d => d.getTime() >= xDate.getTime()) - 1;
 
-  // index が -1 の場合の処理を追加
-  if (index < 0) {
-    // ここにエラー処理または既定の処理を記述
-    return 0; // または適切な値
+  const remainderMillis = xDate.getTime() - dates[index].getTime();
+  const percentOfInterval = remainderMillis / (dates[index + 1 ].getTime() - dates[index].getTime());
+  const x = index * columnWidth + (percentOfInterval * columnWidth);
+  return x;
+};
+
+
+const taskXCoordinateBar = (xDate: Date, dates: Date[], columnWidth: number, startOrEnd: string, task:Task) => {
+  // xDate が dates の範囲の日付を超過する場合、indexを一番最後のものを取得する
+  if(dates.length === 0) return 0
+  let index = dates.findIndex(d => d.getTime() >= xDate.getTime()) - 1;
+  console.log('index', index)
+  let date = xDate;
+
+  if(index === -1) {
+    index = 0;
+    date = dates[index];
   }
 
-  const remainderMillis = xDate.getTime() - dates[index].getTime();
+  const taskStartMonth = new Date(task.start).getMonth()
+  const taskEndMonth = new Date(task.end).getMonth()
+  let datesFirstMonth = dates[0].getMonth()
+  let datesLastMonth = dates[dates.length - 1].getMonth()
+  // xDateがdatesの中の日付より前の日付であれば、0
+  if (taskStartMonth < datesFirstMonth && startOrEnd === 'start') {
+    index = 0;
+    date = dates[index];
+  }
+
+  let addIndex = 1
+  // xDateがdatesの範囲を超えている場合、indexをdatesの最後の要素のインデックスに設定
+  if(taskEndMonth > datesLastMonth && startOrEnd === 'end') {
+    index = dates.length - 2;
+    date = dates[index];
+    addIndex = 2
+  }
+
+  if(taskStartMonth > datesFirstMonth && taskEndMonth > datesLastMonth)  {
+    return 0
+  }
+  if(taskStartMonth < datesFirstMonth && taskEndMonth < datesLastMonth)  {
+    return 0
+  }
+
+if(date === undefined) return 0
+if(dates[index] === undefined) return 0
+  const remainderMillis = date.getTime() - dates[index].getTime();
   let percentOfInterval = 0;
   if(startOrEnd === 'end') {
     percentOfInterval =
-    remainderMillis / (dates[index + 1].getTime() - dates[index].getTime()) + 1;
+    remainderMillis / (dates[index + 1].getTime() - dates[index].getTime()) + addIndex;
   }else{
     percentOfInterval =
     remainderMillis / (dates[index + 1].getTime() - dates[index].getTime());
   }
-  const x = index * columnWidth  + percentOfInterval * columnWidth ;
+  const x = index * columnWidth + percentOfInterval * columnWidth;
   return x;
 };
 const taskXCoordinateRTL = (
@@ -272,7 +319,7 @@ const taskXCoordinateRTL = (
   dates: Date[],
   columnWidth: number
 ) => {
-  let x = taskXCoordinate(xDate, dates, columnWidth, 'start');
+  let x = taskXCoordinate(xDate, dates, columnWidth);
   x += columnWidth;
   return x;
 };

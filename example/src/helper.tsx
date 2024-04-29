@@ -4,8 +4,8 @@ export function initTasks() {
   // const currentDate = new Date();
   const tasks: Task[] = [
     {
-      start: new Date(2023, 0, 1),
-      end: new Date(2023, 0, 31),
+      start: new Date(2023, 3, 11),
+      end: new Date(2023, 4, 30),
       name: 'ABC',
       seconds: 60,
       remaining: 60,
@@ -16,8 +16,8 @@ export function initTasks() {
       styles: { progressColor: '#ffbb54', progressSelectedColor: '#ff9e0d' },
     },
     {
-      start: new Date(2023, 2, 10),
-      end: new Date(2023, 2, 18),
+      start: new Date(2023, 2, 31),
+      end: new Date(2023, 4, 30),
       name: 'DEF',
       seconds: 60,
       remaining: 60,
@@ -28,8 +28,8 @@ export function initTasks() {
       styles: { progressColor: '#ffbb54', progressSelectedColor: '#ff9e0d' },
     },
     {
-      start: new Date(2023, 5, 1),
-      end: new Date(2023, 5, 18),
+      start: new Date(2023, 3, 11),
+      end: new Date(2023, 5, 30),
       name: 'GHI',
       seconds: 60,
       remaining: 60,
@@ -40,8 +40,8 @@ export function initTasks() {
       styles: { progressColor: '#ffbb54', progressSelectedColor: '#ff9e0d' },
     },
     {
-      start: new Date(2023, 4, 1),
-      end: new Date(2023, 4, 5),
+      start: new Date(2023, 3, 11),
+      end: new Date(2023, 4, 30),
       name: 'JKL',
       seconds: 60,
       remaining: 60,
