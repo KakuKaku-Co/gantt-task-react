@@ -267,7 +267,6 @@ const taskXCoordinateBar = (xDate: Date, dates: Date[], columnWidth: number, sta
   // xDate が dates の範囲の日付を超過する場合、indexを一番最後のものを取得する
   if(dates.length === 0) return 0
   let index = dates.findIndex(d => d.getTime() >= xDate.getTime()) - 1;
-  // console.log('index', index)
   let date = xDate;
 
   if(index === -1) {
@@ -295,17 +294,10 @@ const taskXCoordinateBar = (xDate: Date, dates: Date[], columnWidth: number, sta
   const taskStartMonth = new Date(task.start).getMonth()
   const datesMonth = dates[dates.length - 1].getMonth()
   if(taskStartTime > datesFirstTime && taskEndTime > datesLastTime && taskStartMonth !== datesMonth)  {
-    console.log('taskStartTime > datesFirstTime && taskEndTime > datesLastTime')
     return 0
   }
 
   if(taskStartTime < datesFirstTime && taskEndTime < datesLastTime && taskEndTime < datesFirstTime)  {
-    console.log(startOrEnd)
-    console.log(new Date(task.start))
-    console.log(new Date(task.end))
-    console.log(dates[0]) 
-    console.log(dates[dates.length - 1])
-    console.log('taskStartTime < datesFirstTime && taskEndTime < datesLastTime')
     return 0
   }
 
@@ -317,14 +309,10 @@ if(dates[index] === undefined) return 0
     percentOfInterval =
     remainderMillis / (dates[index + 1].getTime() - dates[index].getTime()) + addIndex;
   }else{
-    console.log('else', dates)
-    console.log('else', dates[index])
-    console.log('else', dates[index + 1])
     percentOfInterval =
     remainderMillis / (dates[index + 1].getTime() - dates[index].getTime());
   }
   const x = index * columnWidth + percentOfInterval * columnWidth;
-  console.log(startOrEnd, x)
   return x;
 };
 

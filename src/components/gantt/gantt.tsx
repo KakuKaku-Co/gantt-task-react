@@ -125,7 +125,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
     const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
     let newDates = seedDates(startDate, endDate, viewMode);
-    console.log(newDates)
     if (rtl) {
       newDates = newDates.reverse();
       if (scrollX === -1) {
