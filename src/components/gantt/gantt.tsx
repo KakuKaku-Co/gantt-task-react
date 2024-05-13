@@ -122,10 +122,10 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     taskNewDates = taskNewDates.filter(date => 
       date.getFullYear() === viewDate.getFullYear() && date.getMonth() === viewDate.getMonth()
     );
-      
     const startDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
     const endDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
     let newDates = seedDates(startDate, endDate, viewMode);
+    console.log(newDates)
     if (rtl) {
       newDates = newDates.reverse();
       if (scrollX === -1) {
@@ -136,7 +136,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     setBarTasks(
       convertToBarTasks(
         filteredTasks,
-        taskNewDates,
+        newDates,
         columnWidth,
         rowHeight,
         taskHeight,

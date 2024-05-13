@@ -267,36 +267,45 @@ const taskXCoordinateBar = (xDate: Date, dates: Date[], columnWidth: number, sta
   // xDate が dates の範囲の日付を超過する場合、indexを一番最後のものを取得する
   if(dates.length === 0) return 0
   let index = dates.findIndex(d => d.getTime() >= xDate.getTime()) - 1;
-  console.log('index', index)
+  // console.log('index', index)
   let date = xDate;
 
   if(index === -1) {
     index = 0;
     date = dates[index];
   }
-
-  const taskStartMonth = new Date(task.start).getMonth()
-  const taskEndMonth = new Date(task.end).getMonth()
-  let datesFirstMonth = dates[0].getMonth()
-  let datesLastMonth = dates[dates.length - 1].getMonth()
+  const taskStartTime = new Date(task.start).getTime()
+  const taskEndTime = new Date(task.end).getTime()
+  let datesFirstTime = dates[0].getTime()
+  let datesLastTime = dates[dates.length - 1].getTime()
   // xDateがdatesの中の日付より前の日付であれば、0
-  if (taskStartMonth < datesFirstMonth && startOrEnd === 'start') {
+  if (taskStartTime < datesFirstTime && startOrEnd === 'start') {
     index = 0;
     date = dates[index];
   }
 
   let addIndex = 1
   // xDateがdatesの範囲を超えている場合、indexをdatesの最後の要素のインデックスに設定
-  if(taskEndMonth > datesLastMonth && startOrEnd === 'end') {
+  if(taskEndTime > datesLastTime && startOrEnd === 'end') {
     index = dates.length - 2;
     date = dates[index];
     addIndex = 2
   }
 
-  if(taskStartMonth > datesFirstMonth && taskEndMonth > datesLastMonth)  {
+  const taskStartMonth = new Date(task.start).getMonth()
+  const datesMonth = dates[dates.length - 1].getMonth()
+  if(taskStartTime > datesFirstTime && taskEndTime > datesLastTime && taskStartMonth !== datesMonth)  {
+    console.log('taskStartTime > datesFirstTime && taskEndTime > datesLastTime')
     return 0
   }
-  if(taskStartMonth < datesFirstMonth && taskEndMonth < datesLastMonth)  {
+
+  if(taskStartTime < datesFirstTime && taskEndTime < datesLastTime && taskEndTime < datesFirstTime)  {
+    console.log(startOrEnd)
+    console.log(new Date(task.start))
+    console.log(new Date(task.end))
+    console.log(dates[0]) 
+    console.log(dates[dates.length - 1])
+    console.log('taskStartTime < datesFirstTime && taskEndTime < datesLastTime')
     return 0
   }
 
@@ -308,12 +317,17 @@ if(dates[index] === undefined) return 0
     percentOfInterval =
     remainderMillis / (dates[index + 1].getTime() - dates[index].getTime()) + addIndex;
   }else{
+    console.log('else', dates)
+    console.log('else', dates[index])
+    console.log('else', dates[index + 1])
     percentOfInterval =
     remainderMillis / (dates[index + 1].getTime() - dates[index].getTime());
   }
   const x = index * columnWidth + percentOfInterval * columnWidth;
+  console.log(startOrEnd, x)
   return x;
 };
+
 const taskXCoordinateRTL = (
   xDate: Date,
   dates: Date[],
