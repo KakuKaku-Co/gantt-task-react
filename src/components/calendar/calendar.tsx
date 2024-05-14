@@ -228,8 +228,6 @@ export const Calendar: React.FC<CalendarProps> = ({
       // 曜日の表示は不要だったので、日付のみ表示するように変更
       const bottomValue = `${date.getDate().toString()}`;
 
-        console.log(bottomValue)
-
       bottomValues.push(
         <text
           key={date.getTime()}
