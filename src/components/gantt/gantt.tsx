@@ -28,6 +28,7 @@ const defaultViewDate = new Date(2023, 0, 1);
 
 export const Gantt: React.FunctionComponent<GanttProps> = ({
   tasks,
+  totalHours,
   headerHeight = 50,
   columnWidth = 60,
   listCellWidth = "155px",
@@ -428,6 +429,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     tasks: barTasks,
     dates: dateSetup.dates,
     ganttEvent,
+    totalHours,
     selectedTask,
     rowHeight,
     taskHeight,

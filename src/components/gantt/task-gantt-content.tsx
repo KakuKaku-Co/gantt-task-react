@@ -13,6 +13,7 @@ import {
 
 export type TaskGanttContentProps = {
   tasks: BarTask[];
+  totalHours: number;
   dates: Date[];
   ganttEvent: GanttEvent;
   selectedTask: BarTask | undefined;
@@ -36,6 +37,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   tasks,
   dates,
   ganttEvent,
+  totalHours,
   selectedTask,
   rowHeight,
   columnWidth,
@@ -353,7 +355,7 @@ useEffect(() => {
           fill="black"
           textAnchor="middle"
         >
-          {1200 - totalSeconds}
+          {totalHours - totalSeconds}
         </text>
       ))}
     </g>

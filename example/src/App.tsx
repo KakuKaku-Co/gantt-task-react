@@ -92,6 +92,7 @@ const App = () => {
           <button onClick={handleNextMonth}>次月</button>
       <Gantt
         tasks={tasks}
+        totalHours={750}
         viewMode={view}
         onDateChange={handleTaskChange}
         onDelete={handleTaskDelete}
@@ -107,6 +108,7 @@ const App = () => {
       <h3>Gantt With Limited Height</h3>
       <Gantt
         tasks={tasks}
+        totalHours={750}
         viewMode={view}
         onDateChange={handleTaskChange}
         onDelete={handleTaskDelete}
