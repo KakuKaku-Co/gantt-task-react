@@ -291,9 +291,15 @@ const taskXCoordinateBar = (xDate: Date, dates: Date[], columnWidth: number, sta
     addIndex = 2
   }
 
-  const taskStartMonth = new Date(task.start).getMonth()
-  const datesMonth = dates[dates.length - 1].getMonth()
-  if(taskStartTime > datesFirstTime && taskEndTime > datesLastTime && taskStartMonth !== datesMonth)  {
+  const taskStartDate = new Date(task.start);
+  const taskStartYear = taskStartDate.getFullYear();
+  const taskStartMonth = taskStartDate.getMonth();
+  
+  const datesEndDate = dates[dates.length - 1];
+  const datesYear = datesEndDate.getFullYear();
+  const datesMonth = datesEndDate.getMonth();
+  // タスクの最初の日付がカレンダーの最初の日付より前で、タスクの最後の日付がカレンダーの最後の日付より後の場合、0
+  if(taskStartTime > datesFirstTime && taskEndTime > datesLastTime && (taskStartYear !== datesYear || taskStartMonth !== datesMonth))  {
     return 0
   }
 
