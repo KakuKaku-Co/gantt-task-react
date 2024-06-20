@@ -108,7 +108,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
       }}
     >
       {taskItem}
-      {(task.name !== '放送時間' && task.name !== '残り時間') &&
+      {(task.name !== '放送時間' && task.name !== '残り時間' && task.name !== '金利情報') &&
       (     
         <text
           x={getX()}

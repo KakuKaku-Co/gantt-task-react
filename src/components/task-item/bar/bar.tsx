@@ -14,7 +14,7 @@ export const Bar: React.FC<TaskItemProps> = ({
   onEventStart,
   isSelected,
 }) => {
-  if (task.name === '放送時間' || task.name === '残り時間') {
+  if (task.name === '放送時間' || task.name === '残り時間' || task.name === '金利情報') {
     return null;
   }
 

@@ -97,7 +97,7 @@ export const TaskListTableDefault: React.FC<{
               }}
             >
               {
-                (t.name !== '放送時間' && t.name !== '残り時間') && 
+                (t.name !== '放送時間' && t.name !== '残り時間' && t.name !== '金利情報') && 
                 <React.Fragment>{toLocaleDateString(t.start, dateTimeOptions)}</React.Fragment>
               }
                 {/* &nbsp;{toLocaleDateString(t.start, dateTimeOptions)} */}
@@ -111,7 +111,7 @@ export const TaskListTableDefault: React.FC<{
               }}
             >
               {
-                (t.name !== '放送時間' && t.name !== '残り時間') && 
+                (t.name !== '放送時間' && t.name !== '残り時間' && t.name !== '金利情報') && 
                 <React.Fragment>{toLocaleDateString(t.end, dateTimeOptions)}</React.Fragment>
               }
                 {/* &nbsp;{toLocaleDateString(t.end, dateTimeOptions)} */}

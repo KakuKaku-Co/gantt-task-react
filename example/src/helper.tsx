@@ -6,7 +6,7 @@ export function initTasks() {
     {
       start: new Date(2023, 0, 1),
       end: new Date(2024, 0, 1),
-      name: 'ABC',
+      name: '金利情報',
       seconds: 60,
       remaining: 60,
       id: 'Task 0',
